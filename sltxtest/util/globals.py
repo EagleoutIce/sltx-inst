@@ -5,6 +5,7 @@ import sltxpkg.globals as sg
 
 configuration = copy.deepcopy(sg.configuration)
 
+
 def restore_configuration():
     """Restores the global configuration
     """

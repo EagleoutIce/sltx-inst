@@ -17,7 +17,6 @@ from importlib_resources import files
 from sltxpkg.globals import print_idx
 from sltxpkg.util import create_multiple_replacer
 
-# TODO: in case of error pack the directory with tar and ship it to the folder
 BRACE_REPLACER = create_multiple_replacer({
     ':braceo:': '{',
     ':bracee:': '}',
@@ -123,14 +122,18 @@ class Recipe():
                                   'Recipe for '+str(self.idx)+' failed with code: '+str(code)+'. See logfile: \"' + archive + "\"")
 
     def __save_files(self, our_dir: str):
-        # Get the resulting file(s)
-        print_idx(self.idx, "> Retrieving resulting files to \"" + our_dir + "\"")
+        """Retrieves the resulting files by patterns
+
+        Args:
+            our_dir (str): the path to the target directory for caught files
+        """
+        print_idx(self.idx, '> Retrieving resulting files to "' + our_dir + '"')
         got_files = []
         for wf in self.settings['wanted_files'] + sg.configuration[sg.C_WANTED_FILES]:
             wf = self.__f(wf)
             if sg.args.verbose:
                 print_idx(
-                    self.idx, "  - Retrieving files for pattern \"" + wf + "\"")
+                    self.idx, '  - Retrieving files for pattern "' + wf + '"')
             wanted = glob.glob(os.path.join(
                 sg.configuration[sg.C_WORKING_DIR], wf))
             for f in wanted:

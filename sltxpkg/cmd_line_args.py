@@ -108,7 +108,6 @@ parser.add_argument('--log', dest='log',
                     help="Write to logfile. This is experimental.")
 
 # TODO: Format support with mlatexformat?
-
 cmd_parser = parser.add_subparsers(
     title='command', description="Select the command for sltx", metavar=set(sub_parser.cmds.keys()),
     help="Help for the specific command. You may use shortcuts for them: " +
