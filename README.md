@@ -1,16 +1,17 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/EagleoutIce/sltx/graphs/commit-activity) [![PyPI version shields.io](https://img.shields.io/pypi/v/sltx.svg)](https://pypi.python.org/pypi/sltx/)
-[![Generic badge](https://img.shields.io/badge/Status-WIP-purple.svg)](https://github.com/EagleoutIce/sltx)  
-![Publish to Test-PyPI](https://github.com/EagleoutIce/sltx/workflows/Publish%20to%20Test-PyPI/badge.svg)
+[![Generic badge](https://img.shields.io/badge/Status-WIP-purple.svg)](https://github.com/EagleoutIce/sltx)
+![Publish to Test-PyPI](https://github.com/EagleoutIce/sltx/workflows/Publish%20to%20Test-PyPI/badge.svg) [![Run tests](https://github.com/EagleoutIce/sltx/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/EagleoutIce/sltx/actions/workflows/run-tests.yaml)
 
 # sltx 0.1.x
 
-1. [Short overview](#short-overview)
-2. [How tos'](#how-tos)
-   1. [How to get](#how-to-get)
-   2. [How to setup](#how-to-setup)
-   3. [How to compile](#how-to-compile)
-   4. [How to run](#how-to-run)
-3. [Todos](#todos)
+- [sltx 0.1.x](#sltx-01x)
+  - [Short overview](#short-overview)
+  - [How tos'](#how-tos)
+    - [How to get](#how-to-get)
+    - [How to setup](#how-to-setup)
+    - [How to compile](#how-to-compile)
+    - [How to run](#how-to-run)
+  - [Todos](#todos)
 
 ## Short overview
 
@@ -77,6 +78,5 @@ If you want to generate a *github workflow* just type `sltx gen-gha`.
 ## Todos
 
 * add .sltx-src.yml or some similar file so that the repo itself can determine what it should serve? -- maybe allow different "sets"?
-  
+
 * Update functionality
-  
