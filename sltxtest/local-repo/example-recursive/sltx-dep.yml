@@ -1,0 +1,6 @@
+target: example-recursion
+dependencies:
+  example-recursive-target:
+    url: "./sltxtest/local-repo/example-recursive-target"
+    driver: local
+    grab-files: ["*.info"]

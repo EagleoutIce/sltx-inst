@@ -4,3 +4,7 @@ dependencies:
     url: "{cwd}/example-txt"
     driver: local
     grab-files: ["*.txt"]
+  example-recursion:
+    url: "{cwd}/example-recursive"
+    driver: local
+    grab-files: ["*.1","*.2","*.3"]

@@ -18,5 +18,5 @@ def restore_configuration():
 def run_bare_sltx(args: list):
     """Runs sltx
     """
-    LOGGER.setLevel(logging.ERROR)
+    ## LOGGER.setLevel(logging.ERROR)
     heart.run(args)
