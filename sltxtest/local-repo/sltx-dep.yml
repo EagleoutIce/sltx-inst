@@ -8,3 +8,8 @@ dependencies:
     url: "{cwd}/example-recursive"
     driver: local
     grab-files: ["*.1","*.2","*.3"]
+  example-profiles:
+    url: "{cwd}/example-profile"
+    driver: local
+    grab-files: ["*.x"]
+    profile: 'all'
