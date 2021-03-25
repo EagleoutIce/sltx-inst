@@ -20,7 +20,17 @@ from sltxpkg.log_control import LOGGER
 loaded = []
 
 
-def detect_driver(idx: str, url: str):
+def detect_driver(idx: str, url: str) -> str:
+    """Tries to match the given patterns to [description]
+    This could be optimized by pre-compile the given patterns.
+
+    Args:
+        idx (str): the current index number for logging
+        url (str): the url to adapt the driver from
+
+    Returns:
+        (str): The driver key to use
+    """
     print_idx(idx, " - Autodetecting driver...")
     for key, patterns in sg.configuration[C_DRIVER_PATTERNS].items():
         for pattern in patterns:
@@ -31,8 +41,19 @@ def detect_driver(idx: str, url: str):
 
 
 def split_grab_pattern(pattern: str, default_target: str) -> (str, str):
+    """Performes splits on grab patterns ("source=>target")
+       will fill in the given default target, if split does not present one
+
+    Args:
+        pattern (str): The pattern to split
+        default_target (str): The target to be auto-filled if none given
+
+    Returns:
+        (str,str): pattern and pair
+    """
     parts = pattern.split('=>', 1)
-    return (parts[0], default_target if len(parts) == 1 else parts[1])
+    target = default_target if len(parts) == 1 else parts[1]
+    return (parts[0], target)
 
 
 def grab_from(idx: str, path: str, data: dict, target: str, key: str, grabber) -> bool:
@@ -186,36 +207,66 @@ def install_dependency(name: str, idx: str, data: dict, target: str):
     use_driver(idx, data, name, driver, url, target)
 
 
+def _finish_runners(runners: list):
+    futures.wait(runners)
+    for runner in runners:
+        if runner.result() is not None:
+            LOGGER.info(runner.result())
+
+
 def _install_dependencies(idx: int, dep_dict: dict, target: str, first: bool = False):
+    """Will install dependencies in an multithreaded environment and may be called recursively
+
+    Args:
+        idx (int): The index to be run in (will start with 0)
+        dep_dict (dict): Dependencies to fetch with this run
+        target (str): The target directory for the fetch
+        first (bool, optional): Flag for the initial run. Defaults to False.
+    """
     with futures.ThreadPoolExecutor(max_workers=sg.args.threads) as pool:
         runners = []
         for i, dep in enumerate(dep_dict['dependencies']):
             runners.append(pool.submit(install_dependency, dep, str(
                 i) if first else str(idx) + "." + str(i), dep_dict['dependencies'][dep], target))
-        futures.wait(runners)
-        for runner in runners:
-            if runner.result() is not None:
-                LOGGER.info(runner.result())
+        _finish_runners(runners)
 
 
-def install_dependencies(target: str = su.get_sltx_tex_home()):
+def _install_dependencies_guard():
+    """Cheap command line guard which will check for valid keys
+    """
     if "target" not in sg.dependencies or "dependencies" not in sg.dependencies:
         LOGGER.error(
             "The dependency-file must supply a 'target' and an 'dependencies' key!")
         sys.exit(1)
+
+
+def _install_dependencies_cleanup():
+    """This will be run after the requested dependencies have been installed.
+    """
+    # all installed
+    if sg.configuration[C_CLEANUP]:
+        LOGGER.info("> Cleaning up the download directory, as set.")
+        shutil.rmtree(sg.configuration[C_DOWNLOAD_DIR])
+
+    LOGGER.info("Loaded: " + str(dep.loaded))
+    if not sg.configuration[C_RECURSIVE]:
+        LOGGER.info("Recursion was disabled.")
+
+    LOGGER.info("Dependency installation for %s completed.",
+                sg.dependencies["target"])
+
+
+def install_dependencies(target: str = su.get_sltx_tex_home()) -> None:
+    """Download and unpack given dependencies to the given target directory
+
+    Args:
+        target (str, optional): The target folder. Defaults to su.get_sltx_tex_home().
+    """
+    _install_dependencies_guard()
 
     write_to_log("====Dependencies for:" + sg.dependencies["target"]+"\n")
     LOGGER.info("\nDependencies for: " + sg.dependencies["target"])
     LOGGER.info("Installing to: %s\n", target)
 
     _install_dependencies(0, sg.dependencies, target, first=True)
-
-    # all installed
-    if sg.configuration[C_CLEANUP]:
-        LOGGER.info("> Cleaning up the download directory, as set.")
-        shutil.rmtree(sg.configuration[C_DOWNLOAD_DIR])
-    LOGGER.info("Loaded: " + str(dep.loaded))
-    if not sg.configuration[C_RECURSIVE]:
-        LOGGER.info("Recursion was disabled.")
-    LOGGER.info("Dependency installation for %s completed.",
-                sg.dependencies["target"])
+    _install_dependencies_cleanup()
