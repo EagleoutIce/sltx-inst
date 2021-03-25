@@ -6,7 +6,7 @@ from sltxpkg.util import create_multiple_replacer
 
 LOG_STR_LONG = '%(asctime)s [%(levelname)-8s@%(filename)-10s;%(lineno)-4d] %(message)s'
 LOG_STR = '%(message)s'
-LOG_STR = '%(level_color)s%(message)s%(color_reset)s'
+COLOR_LOG_STR = '%(level_color)s%(message)s%(color_reset)s'
 
 RESET_SEQ = "\033[0m"
 ENCAPSULE_SEQ = "\033[%dm%s" + RESET_SEQ
@@ -35,7 +35,6 @@ class LithieColoredStreamFormatter(logging.Formatter):
         self.use_color = use_color
 
     def format(self, record):
-
         if self.use_color and record.levelname in COLORS:
             record.level_color = COLORS[record.levelname]
         else:
