@@ -33,5 +33,5 @@ setuptools.setup(
         'Intended Audience :: Developers',
         'Environment :: Console'
     ],
-    python_requires='>=3.5',
+    python_requires='>=3.5'
 )
