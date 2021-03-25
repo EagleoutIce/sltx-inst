@@ -1,9 +1,7 @@
 target: example-profiles
 
 profiles:
-  default: {
-    'grab-files': ['*.a']
-  }
-  all: {
-    'grab-files': ['*.a', '*.b']
-  }
+  default:
+    grab-files: ["*.a"]
+  all:
+    grab-files: ["*.a", "*.b"]
