@@ -7,16 +7,8 @@ import os  # list directory
 import sys  # cmd line args
 
 import sltxpkg.config as sc
-import sltxpkg.util as su
 from sltxpkg import globals as sg
 from sltxpkg.cmd_line_args import parser, sub_parser
-from sltxpkg.command_config import Arg, Commands
-from sltxpkg.globals import DEFAULT_CONFIG, LOCAL_CONFIG
-
-
-from sltxpkg.commands import (cmd_auto_setup, cmd_cleanse, cmd_compile,
-                              cmd_dependency, cmd_docker, cmd_gen_gha,
-                              cmd_raw_compile, cmd_version, cmd_analyze_logfile)
 from sltxpkg.globals import DEFAULT_CONFIG, LOCAL_CONFIG
 from sltxpkg.log_control import LOGGER, log_set_file_handler
 
@@ -33,7 +25,7 @@ def retrieve_by_alias():
             if tc in alias[1][0][1]][0]
 
 
-if (len(sys.argv) <= 1):
+if len(sys.argv) <= 1:
     parser.parse_args(['-h'])
 
 sg.args = parser.parse_args()
@@ -68,9 +60,8 @@ if sg.args.config is not None:
 try:
     tc = sg.args.command.lower()
     cmd = sub_parser.cmds[tc if tc in sub_parser.cmds else retrieve_by_alias()]
+    cmd[0][0]()
 except KeyError:
     LOGGER.error("The supplied command: %s is unknown. Choose one of: %s",
                  sg.args.command, list(sub_parser.cmds.keys()))
     exit(1)
-
-cmd[0][0]()

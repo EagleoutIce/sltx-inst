@@ -9,12 +9,9 @@ from subprocess import PIPE, Popen  # execution
 
 import sltxpkg.globals as sg
 import sltxpkg.util as su
-from sltxpkg import dep
 from sltxpkg.config import load_dependencies_config, write_to_log
-from sltxpkg.globals import (C_AUTODETECT_DRIVERS, C_CLEANUP, C_CREATE_DIRS,
-                             C_DOWNLOAD_DIR, C_DRIVER_LOG, C_DRIVER_PATTERNS,
-                             C_DRIVERS, C_RECURSIVE, C_TEX_HOME,
-                             DEFAULT_CONFIG, print_idx)
+from sltxpkg.globals import (C_AUTODETECT_DRIVERS, C_CLEANUP, C_DOWNLOAD_DIR, C_DRIVER_PATTERNS,
+                             C_DRIVERS, C_RECURSIVE, print_idx)
 from sltxpkg.log_control import LOGGER
 
 loaded = []
@@ -53,7 +50,7 @@ def split_grab_pattern(pattern: str, default_target: str) -> (str, str):
     """
     parts = pattern.split('=>', 1)
     target = default_target if len(parts) == 1 else parts[1]
-    return (parts[0], target)
+    return parts[0], target
 
 
 def grab_from(idx: str, path: str, data: dict, target: str, key: str, grabber) -> bool:
@@ -99,7 +96,7 @@ def f_grab_dirs(data: (str, str), target: str, path: str):
         du.copy_tree(data[0], dir_target)
 
 
-def write_proc_to_log(idx: int, stream, mirror: bool):
+def write_proc_to_log(idx: str, stream, mirror: bool):
     while True:
         line = stream.readline()
         if not line:
@@ -167,7 +164,7 @@ def use_driver(idx: str, data: dict, dep_name: str, driver: str, url: str, targe
         print_idx(idx, " - Error-Log of Driver:")
     write_proc_to_log(idx, feedback.stderr, return_code != 0)
 
-    if(sg.configuration[C_RECURSIVE]):
+    if sg.configuration[C_RECURSIVE]:
         recursive_dependencies(idx, driver_target_dir, data, dep_name, target)
 
     if return_code != 0:
@@ -214,11 +211,11 @@ def _finish_runners(runners: list):
             LOGGER.info(runner.result())
 
 
-def _install_dependencies(idx: int, dep_dict: dict, target: str, first: bool = False):
+def _install_dependencies(idx: str, dep_dict: dict, target: str, first: bool = False):
     """Will install dependencies in an multithreaded environment and may be called recursively
 
     Args:
-        idx (int): The index to be run in (will start with 0)
+        idx (str): The index to be run in (will start with 0)
         dep_dict (dict): Dependencies to fetch with this run
         target (str): The target directory for the fetch
         first (bool, optional): Flag for the initial run. Defaults to False.
@@ -227,7 +224,7 @@ def _install_dependencies(idx: int, dep_dict: dict, target: str, first: bool = F
         runners = []
         for i, dep in enumerate(dep_dict['dependencies']):
             runners.append(pool.submit(install_dependency, dep, str(
-                i) if first else str(idx) + "." + str(i), dep_dict['dependencies'][dep], target))
+                i) if first else idx + "." + str(i), dep_dict['dependencies'][dep], target))
         _finish_runners(runners)
 
 
@@ -248,7 +245,7 @@ def _install_dependencies_cleanup():
         LOGGER.info("> Cleaning up the download directory, as set.")
         shutil.rmtree(sg.configuration[C_DOWNLOAD_DIR])
 
-    LOGGER.info("Loaded: " + str(dep.loaded))
+    LOGGER.info("Loaded: " + str(loaded))
     if not sg.configuration[C_RECURSIVE]:
         LOGGER.info("Recursion was disabled.")
 
@@ -264,9 +261,9 @@ def install_dependencies(target: str = su.get_sltx_tex_home()) -> None:
     """
     _install_dependencies_guard()
 
-    write_to_log("====Dependencies for:" + sg.dependencies["target"]+"\n")
+    write_to_log("====Dependencies for:" + sg.dependencies["target"] + "\n")
     LOGGER.info("\nDependencies for: " + sg.dependencies["target"])
     LOGGER.info("Installing to: %s\n", target)
 
-    _install_dependencies(0, sg.dependencies, target, first=True)
+    _install_dependencies('0', sg.dependencies, target, first=True)
     _install_dependencies_cleanup()

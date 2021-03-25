@@ -4,7 +4,8 @@ import random
 import shutil
 import tempfile
 from os.path import abspath, basename, splitext
-from pathlib import Path
+
+from importlib_resources import files
 
 import sltxpkg.config as sc
 import sltxpkg.data.recipes
@@ -12,8 +13,6 @@ import sltxpkg.globals as sg
 import sltxpkg.lithie.compile.cooking.recipe_exceptions as rex
 import sltxpkg.lithie.compile.tools as tools
 import sltxpkg.util as su
-import yaml
-from importlib_resources import files
 from sltxpkg.globals import print_idx
 from sltxpkg.util import create_multiple_replacer
 
@@ -24,13 +23,12 @@ BRACE_REPLACER = create_multiple_replacer({
 
 
 class Recipe():
-
     settings = {
         'name': '',
         'author': '',
         'hooks': {
-                'pre': [],
-                'in': [],  # before retrieval
+            'pre': [],
+            'in': [],  # before retrieval
             'post': []  # before cleanup
         },
         # cleanup will be determined by global settings
@@ -104,7 +102,8 @@ class Recipe():
     def __critical_abort(self, code: int):
         print_idx(self.idx, "Collecting files in working directory")
         archive = shutil.make_archive(os.path.join(
-            os.getcwd(), 'sltx-log-' + su.get_now() + '-' + su.sanitize_filename(self.file)), 'zip', self.__f("{out_dir}"))
+            os.getcwd(), 'sltx-log-' + su.get_now() + '-' + su.sanitize_filename(self.file)), 'zip',
+            self.__f("{out_dir}"))
         print_idx(self.idx, "  - Created: \"" + archive +
                   "\" (" + os.path.basename(archive) + ")")
 
@@ -119,7 +118,8 @@ class Recipe():
         # automatic analyze
         os.system('sltx analyze "' + archive + '"')
         raise rex.RecipeException(archive,
-                                  'Recipe for '+str(self.idx)+' failed with code: '+str(code)+'. See logfile: \"' + archive + "\"")
+                                  'Recipe for ' + str(self.idx) + ' failed with code: ' + str(
+                                      code) + '. See logfile: \"' + archive + "\"")
 
     def __save_files(self, our_dir: str):
         """Retrieves the resulting files by patterns

@@ -1,7 +1,8 @@
+import sltxpkg.config as sc
+import sltxpkg.globals as sg
 import sltxpkg.prompt as prompt
 from sltxpkg.lithie.docker_mg import DockerCtrl
-import sltxpkg.globals as sg
-import sltxpkg.config as sc
+
 
 # TODO: get valid names
 
@@ -17,12 +18,13 @@ def install():
                         valid_profiles, target)
         exit(1)
 
-    _install(target)
+    install(target)
 
 
-def _install(target: str):
+def install(target: str):
     docker_ctrl = DockerCtrl()
     docker_ctrl.update_img(target)
+
 
 # TODO: clarify time in docker container as it is utc it must be the same as host!!!!
 # TODO: keep container running to avoid full recompilations each time? (this should be the optimum!!)

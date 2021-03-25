@@ -1,26 +1,20 @@
 import os  # list directory
 import re
 import shutil  # clean working dir
-import sys
-from concurrent import futures
 from pathlib import Path
 
 from importlib_resources import files
 
+import sltxpkg.data
 import sltxpkg.lithie.compile.cooker as cooker
-from sltxpkg import dep, generate, util as su, config as sc, globals as sg
-from sltxpkg.config import (assure_dirs, load_configuration,
-                            load_dependencies_config, write_to_log)
+from sltxpkg import generate, util as su, config as sc, globals as sg
+from sltxpkg.config import (assure_dirs, load_dependencies_config)
 from sltxpkg.dep import install_dependencies
-from sltxpkg.globals import (C_CLEANUP, C_CREATE_DIRS, C_DOWNLOAD_DIR,
-                             C_DRIVER_LOG, C_DRIVER_PATTERNS, C_DRIVERS,
-                             C_RECURSIVE, C_TEX_HOME, C_USE_DOCKER,
-                             C_WORKING_DIR, DEFAULT_CONFIG, C_DOCKER_PROFILE)
+from sltxpkg.globals import (C_USE_DOCKER,
+                             C_DOCKER_PROFILE)
 from sltxpkg.lithie import commands as lithiecmd
 from sltxpkg.lithie.analyze.analyzer import Analyzer
 from sltxpkg.log_control import LOGGER
-
-import sltxpkg.data
 
 
 def cmd_auto_setup():
@@ -34,7 +28,7 @@ def cmd_auto_setup():
         install_dependencies()
 
     # TODO: allow option to install local dependencies too using the shipped sltx-dep?
-    lithiecmd._install(sg.configuration[sg.C_DOCKER_PROFILE])
+    lithiecmd.install(sg.configuration[sg.C_DOCKER_PROFILE])
 
 
 def cmd_dependency():
@@ -90,7 +84,7 @@ def cmd_raw_compile():
 
 
 def cmd_compile():
-    if(sg.configuration[C_USE_DOCKER]):
+    if sg.configuration[C_USE_DOCKER]:
         LOGGER.info("Using docker to compile (" +
                     sg.configuration[C_DOCKER_PROFILE] + ")")
         lithiecmd.compile()
@@ -145,7 +139,7 @@ def cmd_cleanse():
     for clean_pattern in clean_patterns:
         for f in Path(".").glob(clean_pattern):
             if should_be_excluded(str(f)):
-                LOGGER.info("File " + f + " excluded.")
+                LOGGER.info("File " + str(f) + " excluded.")
             else:
                 f.unlink()
     if sg.args.cleanse_all:

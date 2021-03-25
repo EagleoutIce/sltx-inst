@@ -1,9 +1,10 @@
 import os
 from sys import platform
 
+from importlib_resources import files
+
 import sltxpkg.data.latexmk.configs
 import sltxpkg.util as su
-from importlib_resources import as_file, files
 from sltxpkg import globals as sg
 from sltxpkg.globals import LOGGER
 
@@ -48,16 +49,16 @@ def append_local2global_config(name: str) -> None:
 
 def __append_to_global_config(text: str, guard: str) -> None:
     file = get_root()
-    START_GUARD = "# sltx START " + guard
+    start_guard = "# sltx START " + guard
     mode = 'a'
 
-    if os.path.isfile(file) and su.file_contains(file, START_GUARD):
+    if os.path.isfile(file) and su.file_contains(file, start_guard):
         if sg.args.verbose:
             LOGGER.info(
                 "Global latexmk config already contains config for %s. Skipping.", guard)
         return
 
     with open(file, mode) as f:
-        f.write("\n" + START_GUARD + "\n")
+        f.write("\n" + start_guard + "\n")
         f.writelines(text)
         f.write("# sltx END " + guard + "\n")

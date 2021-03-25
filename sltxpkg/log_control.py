@@ -1,6 +1,5 @@
 import logging
 import logging.config
-import re
 from datetime import datetime
 
 from sltxpkg.util import create_multiple_replacer
@@ -19,7 +18,6 @@ COLORS = {
     'CRITICAL': '\033[95m',
     'ERROR': '\033[31m'
 }
-
 
 __log__replacer = create_multiple_replacer({
     'True': ENCAPSULE_SEQ % (92, 'True'),

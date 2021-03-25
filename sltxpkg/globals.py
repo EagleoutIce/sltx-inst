@@ -49,8 +49,8 @@ configuration = {
     C_AUTODETECT_DRIVERS: True,
     C_DRIVERS: {
         "git": {
-                "command": "git clone --depth 1 {args} \"{url}\" \"{download_dir}/{dep_name}\"",
-                "target-dir": "{download_dir}/{dep_name}",
+            "command": "git clone --depth 1 {args} \"{url}\" \"{download_dir}/{dep_name}\"",
+            "target-dir": "{download_dir}/{dep_name}",
             "needs-delete": True  # if already exists
             # TODO: maybe update routine?
         }
@@ -63,7 +63,7 @@ configuration = {
 dependencies = {}
 
 
-def print_idx(idx: int, message: str, pre: str = ''):
+def print_idx(idx: str, message: str, pre: str = ''):
     LOGGER.info("%s[ID %s] %s", pre, str(idx), message)
 
 

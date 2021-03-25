@@ -1,14 +1,10 @@
 import os
 import sys
 
-import yaml
-
 from sltxpkg import globals as sg
 from sltxpkg import util as su
-from sltxpkg.globals import (C_AUTODETECT_DRIVERS, C_CACHE_DIR, C_CLEANUP,
-                             C_CREATE_DIRS, C_DOWNLOAD_DIR, C_DRIVER_LOG,
-                             C_DRIVER_PATTERNS, C_DRIVERS, C_TEX_HOME,
-                             C_WORKING_DIR, DEFAULT_CONFIG)
+from sltxpkg.globals import (C_CACHE_DIR, C_CREATE_DIRS, C_DOWNLOAD_DIR, C_DRIVER_LOG,
+                             C_TEX_HOME, C_WORKING_DIR)
 from sltxpkg.log_control import LOGGER
 
 

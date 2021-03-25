@@ -25,7 +25,8 @@ class Commands:
         for command in self.cmds.items():
             aliases = Commands.__alias_from_cmd(command)
             add_parser(p, command[0], command[1][2], **((dict(command[1][1].kwargs,
-                                                              aliases=aliases)) if len(aliases) != 0 else command[1][1].kwargs))
+                                                              aliases=aliases)) if len(aliases) != 0 else command[1][
+                1].kwargs))
 
     @staticmethod
     def __alias_from_cmd(alias: tuple) -> list:

@@ -1,8 +1,8 @@
-import shutil
-import tempfile
 import glob
 import os.path
 import re
+import shutil
+import tempfile
 
 ANALYZER_PATTERN = re.compile(
     '^! |Error:|Undefined control sequence|improper alph|Incomplete \\\\if|Runaway preamble\\?|has an extra|Permission denied|not loadable: Metric|Extra alignment tab has been|Can\'t create output|too long|Runaway argument|al parameter number|Misplaced (alignment)?|doesn\'t match|Invalid UTF-8|forgotten \\\\end|ERROR|Missing|Parameters must be (numbered consecutively)?|Improper alph|Illegal unit of')
@@ -18,7 +18,7 @@ class Analyzer():
         self.idx = idx
 
     def __unpack_or_cp(self) -> str:
-        if(re.match(ARCHIVE_PATTERN, self.file)):
+        if (re.match(ARCHIVE_PATTERN, self.file)):
             print("\033[38;5;31m" + self.file.replace(os.getcwd(),
                                                       '\033[38;5;247m[cwd]\033[38;5;31m') + "\033[m")
             target = tempfile.TemporaryDirectory(prefix='sltx-ua-log').name
@@ -29,7 +29,7 @@ class Analyzer():
             return ""
 
     def __analyze_file(self, analyze_f: str):
-        print("\033[38;5;31m  - "+analyze_f+"\033[m", end=' ')
+        print("\033[38;5;31m  - " + analyze_f + "\033[m", end=' ')
         self.fine = True
         with open(analyze_f) as tl:
             self.offset_ptr = 0

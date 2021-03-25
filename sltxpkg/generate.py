@@ -1,21 +1,20 @@
-import sltxpkg.prompt as prompt
 import os
 
 import yaml
 from yaml.representer import SafeRepresenter
 
 import sltxpkg.globals as sg
-from sltxpkg.globals import C_TEX_HOME
+import sltxpkg.prompt as prompt
 from sltxpkg.log_control import LOGGER
-
-# https://stackoverflow.com/a/20863889
 
 
 def change_style(style, representer):
+    # https://stackoverflow.com/a/20863889
     def new_representer(dumper, data):
         scalar = representer(dumper, data)
         scalar.style = style
         return scalar
+
     return new_representer
 
 
@@ -117,7 +116,7 @@ def step_compile(document: dict, target_profile: str):
     # NOTE: root is required for now due to permission errors in action container
     # this is only for gha
     exec_line += "compile --root --profile \"" + target_profile + \
-        "\" " + " ".join(['"' + f + '"' for f in files]) + "\n"
+                 "\" " + " ".join(['"' + f + '"' for f in files]) + "\n"
 
     add_step(document,
              "Compile the Documents",
@@ -142,7 +141,7 @@ def step_commit_and_push(document: dict, files: list):
         files = push_file_list.split(',')
 
     add_line = "git add -f " + \
-        " ".join(["\"" + f + "\"" for f in files]) + "\n"
+               " ".join(["\"" + f + "\"" for f in files]) + "\n"
 
     # commit
     add_step(document,
@@ -164,6 +163,8 @@ def step_commit_and_push(document: dict, files: list):
 
 
 def generate():
+    """Generate a new github action
+    """
     document = {}
 
     LOGGER.info("We will now generate a GitHub-Action workflow")

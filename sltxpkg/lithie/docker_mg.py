@@ -4,9 +4,10 @@ import os
 import sys
 
 import docker
+
 import sltxpkg.globals as sg
-from sltxpkg.globals import DOCKER_URL
 import sltxpkg.util as su
+from sltxpkg.globals import DOCKER_URL
 from sltxpkg.log_control import LOGGER
 
 
@@ -28,6 +29,7 @@ class DockerCtrl:
                 d = {'status': 'unknown', 'progress': '', 'id': ''}
                 d = {**d, **json.loads(subline)}
                 LOGGER.info("   {status} {progress} {id}".format(**d))
+
     # tODO: autocache name with unique path needs to use real file name not docker!!
 
     def run_in_container(self, root: bool, profile: str, command: str):
@@ -73,7 +75,7 @@ class DockerCtrl:
         buffer = b''
         for l in run.logs(stdout=True, stderr=True, stream=True, timestamps=True):
             try:
-                LOGGER.info('\u0001'+(buffer + l).decode('utf-8'))
+                LOGGER.info('\u0001' + (buffer + l).decode('utf-8'))
                 buffer = b''
             except UnicodeDecodeError as ex:
                 buffer += l

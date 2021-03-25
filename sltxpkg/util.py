@@ -5,7 +5,7 @@ from sys import platform
 from time import localtime, strftime
 
 import yaml
-from importlib_resources import as_file, files
+from importlib_resources import files
 
 import sltxpkg.data
 import sltxpkg.globals as sg
@@ -70,7 +70,7 @@ def get_sltx_tex_home() -> str:
         **sg.configuration, os_default_texmf=default_texmf()))
 
 
-SANITIZE_PATTERN = re.compile('[^a-zA-Z0-9\-]')
+SANITIZE_PATTERN = re.compile('[^a-zA-Z0-9-]')
 
 
 def sanitize_filename(text: str) -> str:
