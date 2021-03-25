@@ -1,0 +1,6 @@
+target: example-dep-file
+dependencies:
+  example-txt:
+    url: "./example-txt"
+    driver: local
+    grab-files: ["*.txt"]

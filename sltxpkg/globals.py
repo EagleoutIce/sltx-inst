@@ -51,8 +51,15 @@ configuration = {
         "git": {
             "command": "git clone --depth 1 {args} \"{url}\" \"{download_dir}/{dep_name}\"",
             "target-dir": "{download_dir}/{dep_name}",
-            "needs-delete": True  # if already exists
+            "needs-delete": True,  # if already exists
+            "needs-create": False
             # TODO: maybe update routine?
+        },
+        "local": {
+            "command": "cp -r {args} \"{url}\" \"{download_dir}/{dep_name}\"",
+            "target-dir": "{download_dir}/{dep_name}",
+            "needs-delete": False,
+            "needs-create": False
         }
     },
     C_DRIVER_PATTERNS: {

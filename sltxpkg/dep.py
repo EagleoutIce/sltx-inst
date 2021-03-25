@@ -53,6 +53,39 @@ def split_grab_pattern(pattern: str, default_target: str) -> (str, str):
     return parts[0], target
 
 
+def extend_grab_from_local(idx: str, driver_target_dir: str, data: dict) -> list:
+    """May install extra profiles
+
+       This method will check for a local dep file, and if present
+       check for a profiles key. if present it will check for a selected profile in the data dict.
+       If so, select it, if none, set the default
+    Args:
+        idx (str): index to use in multithreading
+        driver_target_dir (str): target dir of the current driver
+        data (str): data dict for local configuration
+    Returns:
+        a list of additional dependencies
+    """
+    if 'dep' not in data:
+        dep = sg.DEFAULT_DEPENDENCY
+    else:
+        dep = data['dep']
+    dep_files = glob.glob(os.path.join(driver_target_dir, dep), recursive=True)
+    if len(dep_files) <= 0:
+        return []
+
+    # load file and check for default
+    # TODO: avoid reloading if recursive?
+    file_profiles = {}
+    for dep_file in dep_files:
+        file_profiles = load_dependencies_config(dep_file, file_profiles)
+
+    if 'profiles' not in file_profiles:
+        return []
+
+    print('found profiles:', file_profiles)
+
+
 def grab_from(idx: str, path: str, data: dict, target: str, key: str, grabber) -> bool:
     if key not in data:
         print_idx(idx, " ! Key '" + key + "' not found. Won't grab any...")
@@ -60,14 +93,15 @@ def grab_from(idx: str, path: str, data: dict, target: str, key: str, grabber) -
 
     grabs = []
     for grab_pattern in data[key]:
-        pattern = split_grab_pattern(grab_pattern, target)
+        cur_grab_pattern = split_grab_pattern(grab_pattern, target)
         # maybe forbid level up?
-        grabs.extend(map(lambda x, pattern=pattern: (x, pattern[1]), glob.glob(os.path.join(
-            path, pattern[0]), recursive=True)))
+        grabs.extend(map(lambda x, pattern=cur_grab_pattern: (x, pattern[1]),
+                         glob.glob(os.path.join(path, cur_grab_pattern[0]), recursive=True)))
 
-    # TODO: rel path for files?
+    grabs.extend(extend_grab_from_local(idx, path, data))
+
     # extra so i can setup installer afterwards more easily
-    print_idx(idx, " > Grabbing the follwing for installation: "
+    print_idx(idx, " > Grabbing the following for installation: "
               + str([os.path.relpath(f[0], path) for f in grabs]))
     for grab in grabs:
         grabber(grab, target, path)
@@ -82,10 +116,6 @@ def f_grab_files(data: (str, str), target: str, path: str):
 
 
 def f_grab_dirs(data: (str, str), target: str, path: str):
-    if sys.version_info < (3, 8, 0):
-        LOGGER.info("Python version below 3.8, falling back with distutils!")
-        import distutils.dir_util as du
-
     # only choose relative path
     dir_target = os.path.join(target, data[1]) if data[1] != target else os.path.join(
         data[1], os.path.relpath(data[0], path))
@@ -93,6 +123,8 @@ def f_grab_dirs(data: (str, str), target: str, path: str):
     if sys.version_info >= (3, 8, 0):  # we have exist is ok
         shutil.copytree(data[0], dir_target, dirs_exist_ok=True)
     else:
+        LOGGER.info("Python version below 3.8, falling back with distutils!")
+        import distutils.dir_util as du
         du.copy_tree(data[0], dir_target)
 
 
@@ -144,7 +176,7 @@ def recursive_dependencies(idx: str, driver_target_dir: str, data: dict, dep_nam
     _install_dependencies(idx, new_dependencies, target)
 
 
-def use_driver(idx: str, data: dict, dep_name: str, driver: str, url: str, target: str):
+def use_driver(idx: str, data: dict, dep_name: str, driver: str, target: str):
     # default no arguments
     if "args" not in data:
         data["args"] = ""
@@ -156,6 +188,12 @@ def use_driver(idx: str, data: dict, dep_name: str, driver: str, url: str, targe
         print_idx(idx, " - Target folder " + driver_target_dir +
                   "exists. Will be deleted as the driver needs this")
         shutil.rmtree(driver_target_dir)
+
+    if not os.path.isdir(driver_target_dir) and driver_data["needs-create"]:
+        print_idx(idx, " - Target folder " +
+                  driver_target_dir + " needs creation")
+        os.makedirs(driver_target_dir)
+
     print_idx(idx, " > Executing: " + command)
     feedback = Popen(command, stdout=PIPE, stderr=PIPE, shell=True)
     return_code = feedback.wait()
@@ -177,8 +215,10 @@ def use_driver(idx: str, data: dict, dep_name: str, driver: str, url: str, targe
 
 def install_dependency(name: str, idx: str, data: dict, target: str):
     print_idx(idx, "Loading \"" + name + "\"")
+
     if "url" not in data:
         print_idx(idx, " ! The dependency did not have an url-tag attached")
+
     url = data["url"]
     print_idx(idx, " - Loading from: \"" + url + "\"")
     if "driver" not in data:
@@ -186,6 +226,7 @@ def install_dependency(name: str, idx: str, data: dict, target: str):
             print_idx(idx, " ! No driver given and autodetection disabled!")
         else:
             data["driver"] = detect_driver(idx, url)
+
     driver = data["driver"]
     print_idx(idx, " - Using driver: \"" + driver + "\"")
 
@@ -194,14 +235,14 @@ def install_dependency(name: str, idx: str, data: dict, target: str):
                   " as it was already loaded by another dep.")
         grab_stuff(idx, name, get_target_dir(data, name, driver), data, target)
         return
+
     loaded.append(name)
 
     if driver not in sg.configuration[C_DRIVERS]:
         print_idx(idx, " ! The selected driver is unknown. Loaded:" +
                   sg.configuration[C_DRIVERS])
         sys.exit(2)
-
-    use_driver(idx, data, name, driver, url, target)
+    use_driver(idx, data, name, driver, target)
 
 
 def _finish_runners(runners: list):
@@ -223,8 +264,8 @@ def _install_dependencies(idx: str, dep_dict: dict, target: str, first: bool = F
     with futures.ThreadPoolExecutor(max_workers=sg.args.threads) as pool:
         runners = []
         for i, dep in enumerate(dep_dict['dependencies']):
-            runners.append(pool.submit(install_dependency, dep, str(
-                i) if first else idx + "." + str(i), dep_dict['dependencies'][dep], target))
+            runners.append(pool.submit(install_dependency, dep, str(i) if first else idx + "." + str(i),
+                                       dep_dict['dependencies'][dep], target))
         _finish_runners(runners)
 
 
@@ -240,7 +281,6 @@ def _install_dependencies_guard():
 def _install_dependencies_cleanup():
     """This will be run after the requested dependencies have been installed.
     """
-    # all installed
     if sg.configuration[C_CLEANUP]:
         LOGGER.info("> Cleaning up the download directory, as set.")
         shutil.rmtree(sg.configuration[C_DOWNLOAD_DIR])
@@ -266,4 +306,4 @@ def install_dependencies(target: str = su.get_sltx_tex_home()) -> None:
     LOGGER.info("Installing to: %s\n", target)
 
     _install_dependencies('0', sg.dependencies, target, first=True)
-    _install_dependencies_cleanup()
+    # _install_dependencies_cleanup()

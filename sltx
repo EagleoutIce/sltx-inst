@@ -57,11 +57,13 @@ if sg.args.threads < 0:
 if sg.args.config is not None:
     sc.load_configuration(sg.args.config)
 
+cmd = None
 try:
     tc = sg.args.command.lower()
     cmd = sub_parser.cmds[tc if tc in sub_parser.cmds else retrieve_by_alias()]
-    cmd[0][0]()
 except KeyError:
     LOGGER.error("The supplied command: %s is unknown. Choose one of: %s",
                  sg.args.command, list(sub_parser.cmds.keys()))
     exit(1)
+
+cmd[0][0]()
