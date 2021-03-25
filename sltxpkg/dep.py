@@ -183,23 +183,23 @@ def use_driver(idx: str, data: dict, dep_name: str, driver: str, target: str):
     driver_data = sg.configuration[C_DRIVERS][driver]
     command = driver_data["command"].format(**data, **sg.configuration, dep_name=dep_name)
     driver_target_dir = get_target_dir(data, dep_name, driver)
-    if os.path.isdir(driver_target_dir) and driver_data["needs-delete"]:
+    if driver_data["needs-delete"] and os.path.isdir(driver_target_dir):
         print_idx(idx, " - Target folder " + driver_target_dir +
                   "exists. Will be deleted as the driver needs this")
         shutil.rmtree(driver_target_dir)
 
-    if not os.path.isdir(driver_target_dir) and driver_data["needs-create"]:
+    if driver_data["needs-create"] and not os.path.isdir(driver_target_dir):
         print_idx(idx, " - Target folder " +
                   driver_target_dir + " needs creation")
         os.makedirs(driver_target_dir)
 
     print_idx(idx, " > Executing: " + command)
-    feedback = Popen(command, stdout=PIPE, stderr=PIPE, shell=True)
-    return_code = feedback.wait()
-    write_proc_to_log(idx, feedback.stdout, False)
-    if return_code != 0:
-        print_idx(idx, " - Error-Log of Driver:")
-    write_proc_to_log(idx, feedback.stderr, return_code != 0)
+    with Popen(command, stdout=PIPE, stderr=PIPE, shell=True) as feedback:
+        return_code = feedback.wait()
+        write_proc_to_log(idx, feedback.stdout, False)
+        if return_code != 0:
+            print_idx(idx, " - Error-Log of Driver:")
+        write_proc_to_log(idx, feedback.stderr, return_code != 0)
 
     if sg.configuration[C_RECURSIVE]:
         recursive_dependencies(idx, driver_target_dir, data, dep_name, target)
