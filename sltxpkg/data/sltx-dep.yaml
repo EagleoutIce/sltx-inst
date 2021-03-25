@@ -3,12 +3,12 @@ dependencies:
   random-intropoem:
     url: https://github.com/EagleoutIce/random-intropoem
     driver: git
-    grab-files: [ "*.sty" ]
+    grab-files: ["*.sty"]
   color-palettes:
     url: https://github.com/EagleoutIce/color-palettes
-    grab-files: [ "*.sty" ]
+    grab-files: ["*.sty"]
   sopra-collection:
     url: https://github.com/EagleoutIce/sopra-collection
-    grab-files: [ "**/*.sty=>./" ]
-    grab-dirs: [ "sopra-listings/Languages=>Languages" ]
+    grab-files: ["**/*.sty=>./"]
+    grab-dirs: ["sopra-listings/Languages=>Languages"]
     dep: sltx-dep.yml

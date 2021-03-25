@@ -2,4 +2,6 @@ target: example-recursion-profiles
 
 # .rofl is only part of the internal profile
 profiles:
-  default: ['*.info', '*.rofl']
+  default: {
+    'grab-files': ['*.info', '*.rofl']
+  }

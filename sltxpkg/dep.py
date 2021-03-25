@@ -53,7 +53,13 @@ def split_grab_pattern(pattern: str, default_target: str) -> (str, str):
     return parts[0], target
 
 
-def extend_grab_from_local(idx: str, driver_target_dir: str, data: dict) -> list:
+class DependencyProfileException(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+
+def extend_grab_from_local(idx: str, driver_target_dir: str, data: dict) -> (list, list):
     """May install extra profiles
 
        This method will check for a local dep file, and if present
@@ -64,7 +70,7 @@ def extend_grab_from_local(idx: str, driver_target_dir: str, data: dict) -> list
         driver_target_dir (str): target dir of the current driver
         data (str): data dict for local configuration
     Returns:
-        a list of additional dependencies
+        (list,list) - a list of additional dependencies in the format 'files, folder'
     """
     if 'dep' not in data:
         dep = sg.DEFAULT_DEPENDENCY
@@ -72,7 +78,7 @@ def extend_grab_from_local(idx: str, driver_target_dir: str, data: dict) -> list
         dep = data['dep']
     dep_files = glob.glob(os.path.join(driver_target_dir, dep), recursive=True)
     if len(dep_files) <= 0:
-        return []
+        return [], []
 
     # load file and check for default
     # TODO: avoid reloading if recursive?
@@ -81,25 +87,44 @@ def extend_grab_from_local(idx: str, driver_target_dir: str, data: dict) -> list
         file_profiles = load_dependencies_config(dep_file, file_profiles)
 
     if 'profiles' not in file_profiles:
-        return []
+        return [], []
 
-    print('found profiles:', file_profiles)
-    return []
+    file_profiles = file_profiles['profiles']
+    # Note: I do want always a default profile so it makes live easier for me
+    if 'default' not in file_profiles:
+        raise DependencyProfileException('No default profile for enlisted profiles. Found: ' + str(file_profiles))
+    if 'profile' in data:
+        requested_profile = data['profile']
+        if requested_profile not in file_profiles:
+            raise DependencyProfileException('Requested profile (' + requested_profile + ') not found. Found: ' +
+                                             str(file_profiles))
+    else:
+        requested_profile = 'default'
+    added_profiles: dict = file_profiles[requested_profile]
+    print_idx(idx, ' > Loaded profile (' + requested_profile + '): ' + str(added_profiles))
+    # TODO: this may be beautified
+    grab_files = added_profiles['grab-files'] if 'grab-files' in added_profiles else ""
+    grab_dirs = added_profiles['grab_dirs'] if 'grab_dirs' in added_profiles else ""
+    return grab_files, grab_dirs
 
 
-def grab_from(idx: str, path: str, data: dict, target: str, key: str, grabber) -> bool:
+def grab_from(idx: str, path: str, data: dict, target: str, key: str, grabber, extras: list) -> bool:
+
     if key not in data:
-        print_idx(idx, " ! Key '" + key + "' not found. Won't grab any...")
-        return False
+        if len(extras) == 0:
+            print_idx(idx, " ! Key '" + key + "' not found. Won't grab any...")
+            return False
+        else:
+            data[key] = extras
+    else:
+        data[key].extend(extras)
 
     grabs = []
-    for grab_pattern in data[key]:
+    for grab_pattern in set(data[key]):
         cur_grab_pattern = split_grab_pattern(grab_pattern, target)
         # maybe forbid level up?
         grabs.extend(map(lambda x, pattern=cur_grab_pattern: (x, pattern[1]),
                          glob.glob(os.path.join(path, cur_grab_pattern[0]), recursive=True)))
-
-    grabs.extend(extend_grab_from_local(idx, path, data))
 
     # extra so i can setup installer afterwards more easily
     print_idx(idx, " > Grabbing the following for installation: "
@@ -141,13 +166,16 @@ def write_proc_to_log(idx: str, stream, mirror: bool):
 
 
 def grab_stuff(idx: str, dep_name: str, target_dir: str, data: dict, target: str):
+
+    extra_files, extra_dirs = extend_grab_from_local(idx, target_dir, data)
+
     print_idx(idx, " > Grabbing dependencies for " + dep_name)
     print_idx(idx, "   - Grabby-Grab-Grab files from \"" + target_dir + "\"...")
     got_files = grab_from(idx, target_dir, data, target,
-                          'grab-files', f_grab_files)
+                          'grab-files', f_grab_files, extra_files)
     print_idx(idx, " - Grabby-Grab-Grab dirs from \"" + target_dir + "\"...")
     got_dirs = grab_from(idx, target_dir, data, target,
-                         'grab-dirs', f_grab_dirs)
+                         'grab-dirs', f_grab_dirs, extra_dirs)
     if not got_files and not got_dirs:
         print_idx(idx, " ! No grabs performed!")
         write_to_log("No grabs performed for: " + dep_name)

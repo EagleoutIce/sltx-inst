@@ -17,7 +17,8 @@ class TestDependencies(unittest.TestCase):
             'recursive.2': ["Rekursionsdatei", "Duo"],
             'recursive.3': ["Rekursionsdatei", "Tre"],
             'recursiveb.1': ["Rekursionsdatei b", "Uno"],
-            'recursive-target.info': ["Help me i am a target"]
+            'recursive-target.info': ["Help me i am a target"],
+            'extra.rofl': ["Mich gibts nur, wenn die profiles (default) richtig gewählt werden!"]
         })
 
     def tearDown(self):
