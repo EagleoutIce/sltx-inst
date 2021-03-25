@@ -19,4 +19,4 @@ jobs:
 
       - name: Run Tests
         run: |
-          make install_local_raw test
+          make build install_local_raw test
