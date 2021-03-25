@@ -28,7 +28,7 @@ def detect_driver(idx: str, url: str) -> str:
     Returns:
         (str): The driver key to use
     """
-    print_idx(idx, " - Autodetecting driver...")
+    print_idx(idx, " - Auto-detecting driver...")
     for key, patterns in sg.configuration[C_DRIVER_PATTERNS].items():
         for pattern in patterns:
             if re.search(pattern, url):
@@ -181,8 +181,7 @@ def use_driver(idx: str, data: dict, dep_name: str, driver: str, target: str):
     if "args" not in data:
         data["args"] = ""
     driver_data = sg.configuration[C_DRIVERS][driver]
-    command = driver_data["command"].format(
-        **data, **sg.configuration, dep_name=dep_name)
+    command = driver_data["command"].format(**data, **sg.configuration, dep_name=dep_name)
     driver_target_dir = get_target_dir(data, dep_name, driver)
     if os.path.isdir(driver_target_dir) and driver_data["needs-delete"]:
         print_idx(idx, " - Target folder " + driver_target_dir +
@@ -218,12 +217,13 @@ def install_dependency(name: str, idx: str, data: dict, target: str):
 
     if "url" not in data:
         print_idx(idx, " ! The dependency did not have an url-tag attached")
+        exit(1)
 
     url = data["url"]
     print_idx(idx, " - Loading from: \"" + url + "\"")
     if "driver" not in data:
         if not sg.configuration[C_AUTODETECT_DRIVERS]:
-            print_idx(idx, " ! No driver given and autodetection disabled!")
+            print_idx(idx, " ! No driver given and auto-detection disabled!")
         else:
             data["driver"] = detect_driver(idx, url)
 
@@ -253,7 +253,7 @@ def _finish_runners(runners: list):
 
 
 def _install_dependencies(idx: str, dep_dict: dict, target: str, first: bool = False):
-    """Will install dependencies in an multithreaded environment and may be called recursively
+    """Will install dependencies in an multi-threaded environment and may be called recursively
 
     Args:
         idx (str): The index to be run in (will start with 0)
@@ -306,4 +306,4 @@ def install_dependencies(target: str = su.get_sltx_tex_home()) -> None:
     LOGGER.info("Installing to: %s\n", target)
 
     _install_dependencies('0', sg.dependencies, target, first=True)
-    # _install_dependencies_cleanup()
+    _install_dependencies_cleanup()

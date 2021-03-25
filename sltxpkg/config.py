@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 
 from sltxpkg import globals as sg
 from sltxpkg import util as su
@@ -26,6 +27,10 @@ def load_configuration(file: str):
     sg.configuration = {**sg.configuration, **y_conf}
 
 
+def expand_url(path: str, cwd: Path) -> str:
+    return "" if path is None else path.format(cwd=str(cwd.parent))
+
+
 def load_dependencies_config(file: str, target: dict) -> dict:
     """Apply given dependency file to the sltx dep list
 
@@ -37,6 +42,11 @@ def load_dependencies_config(file: str, target: dict) -> dict:
         dict: The target dict with the added dependencies
     """
     y_dep = su.load_yaml(file)
+    if 'dependencies' in y_dep:
+        for dep in y_dep['dependencies']:
+            dep_data = y_dep['dependencies'][dep]
+            if 'url' in dep_data:
+                dep_data['url'] = expand_url(dep_data['url'], Path(file).absolute())
     return {**target, **y_dep}
 
 

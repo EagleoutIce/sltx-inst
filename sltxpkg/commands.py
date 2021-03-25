@@ -23,8 +23,7 @@ def cmd_auto_setup():
 
     if sg.args.auto_deps:
         dep_path = str(files(sltxpkg.data).joinpath('sltx-dep.yaml'))
-        sg.dependencies = load_dependencies_config(
-            dep_path, sg.dependencies)
+        sg.dependencies = load_dependencies_config(dep_path, sg.dependencies)
         install_dependencies()
 
     # TODO: allow option to install local dependencies too using the shipped sltx-dep?

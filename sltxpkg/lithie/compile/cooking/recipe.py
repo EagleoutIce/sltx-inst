@@ -45,7 +45,7 @@ class Recipe():
 
     quiet = ''
 
-    def __init__(self, recipe_path: str, file: str, idx: int):
+    def __init__(self, recipe_path: str, file: str, idx: str):
         super().__init__()
         self.file = file
         self.idx = idx
