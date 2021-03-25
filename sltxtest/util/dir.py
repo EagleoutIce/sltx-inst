@@ -18,7 +18,8 @@ def assert_dir_exact_files(test: unittest.TestCase, directory: str, contents: di
     Returns:
         flag indicating all files are exactly as expected
     """
-    test.assertSetEqual(set(contents.keys()), set(os.listdir(directory)))
+    test.assertSetEqual(set(contents.keys()), set(
+        os.listdir(directory)), 'For: ' + directory)
     assert_dir_files(test, directory, contents)
 
 
@@ -35,6 +36,7 @@ def assert_dir_files(test: unittest.TestCase, directory: str, contents: dict) ->
     """
     for file, content in contents.items():
         current_file = os.path.join(directory, file)
-        test.assertTrue(os.path.isfile(current_file), 'File: "' + file + '" is expected to exist (' + directory + ")")
+        test.assertTrue(os.path.isfile(current_file), 'File: "' +
+                        file + '" is expected to exist (' + directory + ")")
         with open(current_file, mode='r') as f:
             test.assertListEqual(f.read().splitlines(), content)
