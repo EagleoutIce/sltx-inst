@@ -84,6 +84,7 @@ def extend_grab_from_local(idx: str, driver_target_dir: str, data: dict) -> list
         return []
 
     print('found profiles:', file_profiles)
+    return []
 
 
 def grab_from(idx: str, path: str, data: dict, target: str, key: str, grabber) -> bool:
@@ -261,6 +262,9 @@ def _install_dependencies(idx: str, dep_dict: dict, target: str, first: bool = F
         target (str): The target directory for the fetch
         first (bool, optional): Flag for the initial run. Defaults to False.
     """
+    if 'dependencies' not in dep_dict:
+        return
+
     with futures.ThreadPoolExecutor(max_workers=sg.args.threads) as pool:
         runners = []
         for i, dep in enumerate(dep_dict['dependencies']):
