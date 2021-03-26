@@ -2,7 +2,6 @@ import copy
 import unittest
 
 import sltxpkg.globals as sg
-
 import sltxtest.util.globals as sug
 
 

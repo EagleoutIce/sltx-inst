@@ -6,7 +6,6 @@ from sltxtest.util.dir import retrieve_tmpdir, assert_dir_exact_files
 
 
 class TestDependencies(unittest.TestCase):
-
     def test_local_pull(self):
         test_dep_file: Path = Path(__file__).parent / 'local-repo/sltx-dep.yml'
         target_dir = retrieve_tmpdir()

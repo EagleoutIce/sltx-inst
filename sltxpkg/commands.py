@@ -110,12 +110,12 @@ def cleanse_caches():
     # TODO: clean up .latexmkrc entries; not the whole file
     cache_dir = sg.configuration[sg.C_CACHE_DIR]
     if os.path.isdir(cache_dir):
-        LOGGER.info("Cleaning all the caches... (" + cache_dir + ")")
+        LOGGER.info("Cleaning al the caches... (" + cache_dir + ")")
         # avoids deleting the cache dir itself
-        for root, dirs, files in os.walk(cache_dir):
-            for name in files:
+        for root, folder_dirs, folder_files in os.walk(cache_dir):
+            for name in folder_files:
                 os.remove(os.path.join(root, name))
-            for name in dirs:
+            for name in folder_dirs:
                 shutil.rmtree(os.path.join(root, name))
     else:
         LOGGER.warning("No caches \"" + cache_dir +
@@ -142,13 +142,13 @@ def cmd_cleanse():
             else:
                 f.unlink()
     if sg.args.cleanse_all:
-        thome = su.get_sltx_tex_home()
-        if os.path.isdir(thome):
-            LOGGER.error("Cleaning sltx-texmf-tree... (" + thome + ")")
-            shutil.rmtree(thome)
+        texmf_home = su.get_sltx_tex_home()
+        if os.path.isdir(texmf_home):
+            LOGGER.error("Cleaning sltx-texmf-tree... (" + texmf_home + ")")
+            shutil.rmtree(texmf_home)
         else:
             LOGGER.warning("The local sltx-texmf tree in \"" +
-                           thome + "\" was not found. Skipping...")
+                           texmf_home + "\" was not found. Skipping...")
 
     if sg.args.cleanse_all or sg.args.cleanse_cache:
         cleanse_caches()
