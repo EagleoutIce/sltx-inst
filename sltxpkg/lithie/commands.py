@@ -2,12 +2,10 @@ import sltxpkg.config as sc
 import sltxpkg.globals as sg
 import sltxpkg.prompt as prompt
 from sltxpkg.lithie.docker_mg import DockerCtrl
-
-
 # TODO: get valid names
 
 
-def install():
+def install_ask_user():
     valid_profiles = ['tx-small', 'tx-default', 'tx-full']
     print("Please enter the profile you want. Valid names are:", valid_profiles)
     target = prompt.get(

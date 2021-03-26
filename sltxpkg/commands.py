@@ -57,7 +57,7 @@ def cmd_version():
 
 
 def cmd_docker():
-    lithiecmd.install()
+    lithiecmd.install_ask_user()
 
 
 def cmd_raw_compile():
