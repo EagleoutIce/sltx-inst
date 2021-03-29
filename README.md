@@ -11,7 +11,6 @@
     - [How to setup](#how-to-setup)
     - [How to compile](#how-to-compile)
     - [How to run](#how-to-run)
-  - [Todos](#todos)
 
 ## Short overview
 
@@ -74,9 +73,3 @@ sltx dep dep.yml
 If you have your own configuration, lets say it is name "config.yml" add `-c config.yml`.
 
 If you want to generate a *github workflow* just type `sltx gen-gha`.
-
-## Todos
-
-* add .sltx-src.yml or some similar file so that the repo itself can determine what it should serve? -- maybe allow different "sets"?
-
-* Update functionality
