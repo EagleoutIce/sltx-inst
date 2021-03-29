@@ -15,9 +15,7 @@ def autoload_config(path: str, name: str):
 
 
 def retrieve_by_alias(tc: str):
-    return [alias[0]
-            for alias in sub_parser.cmds.items()
-            if tc in alias[1][0][1]][0]
+    return [alias[0] for alias in sub_parser.cmds.items() if tc in alias[1][0][1]][0]
 
 
 def run(args=None):

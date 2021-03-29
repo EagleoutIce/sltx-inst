@@ -242,14 +242,14 @@ def use_driver(idx: str, data: dict, dep_name: str, driver: str, target: str):
 
 
 def install_dependency(name: str, idx: str, data: dict, target: str):
-    print_idx(idx, "Loading \"" + name + "\"")
+    print_idx(idx, 'Loading "' + name + '"')
 
     if "url" not in data:
         print_idx(idx, " ! The dependency did not have an url-tag attached")
         exit(1)
 
     url = data["url"]
-    print_idx(idx, " - Loading from: \"" + url + "\"")
+    print_idx(idx, ' - Loading from: "' + url + '"')
     if "driver" not in data:
         if not sg.configuration[C_AUTODETECT_DRIVERS]:
             print_idx(idx, " ! No driver given and auto-detection disabled!")
@@ -268,7 +268,7 @@ def install_dependency(name: str, idx: str, data: dict, target: str):
     loaded.append(name)
 
     if driver not in sg.configuration[C_DRIVERS]:
-        print_idx(idx, " ! The selected driver is unknown. Loaded:" +
+        print_idx(idx, ' ! The selected driver is unknown. Loaded:' +
                   sg.configuration[C_DRIVERS])
         sys.exit(2)
     use_driver(idx, data, name, driver, target)

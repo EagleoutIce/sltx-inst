@@ -37,29 +37,29 @@ def compile():
     sltx_command = "sltx -t " + str(sg.args.threads) + " "
 
     if sg.args.log:
-        sltx_command += "--log "
+        sltx_command += '--log '
 
     if sg.args.verbose:
-        sltx_command += "--verbose: "
+        sltx_command += '--verbose: '
 
     if sg.args.quiet:
-        sltx_command += "--quiet "
+        sltx_command += '--quiet '
 
     if sg.args.config is not None:
-        sltx_command += "--config \"" + sg.args.config + "\" "
+        sltx_command += '--config "' + sg.args.config + '" '
 
-    sltx_command += "raw-compile "
+    sltx_command += 'raw-compile '
 
     if sg.args.recipe is not None:
-        sltx_command += "--recipe \"" + sg.args.recipe + "\" "
+        sltx_command += '--recipe "' + sg.args.recipe + '" '
 
     if sg.args.extra_arguments is not None:
-        sltx_command += "--args=\"" + " ".join(sg.args.extra_arguments) + "\" "
+        sltx_command += '--args="' + " ".join(sg.args.extra_arguments) + '" '
 
     for dep in sg.args.extra_dependencies:
         # will extend the dict with 'new' ones
         # should work even better if sltx-source.yaml files are present in the targets
-        sltx_command += "--dependency \"" + dep + "\" "
+        sltx_command += '--dependency "' + dep + '" '
 
     sltx_command += " ".join(['"' + f + '"' for f in sg.args.files])
 

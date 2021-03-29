@@ -33,18 +33,18 @@ def assure_workflow_target(path: str):
         if not overwrite:
             LOGGER.error("Aborting...")
             exit(1)
-    basepath = os.path.dirname(path)
-    if basepath is None or basepath.strip() == "":
+    base_path = os.path.dirname(path)
+    if base_path is None or base_path.strip() == "":
         return
 
-    if not os.path.isdir(basepath):
+    if not os.path.isdir(base_path):
         LOGGER.info(
-            "The directory %s does not exist. should it be created?", basepath)
+            "The directory %s does not exist. should it be created?", base_path)
         create = prompt.get_bool(default=True)
         if not create:
             LOGGER.error("Aborting...")
             exit(1)
-        os.makedirs(basepath)
+        os.makedirs(base_path)
 
 
 def add_step(document: dict, name: str, uses: str = None, _with: dict = None, _run: str = None):
@@ -193,4 +193,4 @@ def generate():
         stream = yaml.dump(document, default_flow_style=False, sort_keys=False)
         # formatting a little bit?
         f.write(stream.replace('jobs:', '\njobs:'))
-    LOGGER.info("File written to \"" + target_path + "\". Job completed.")
+    LOGGER.info('File written to "' + target_path + '". Job completed.')

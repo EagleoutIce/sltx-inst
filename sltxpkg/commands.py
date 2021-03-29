@@ -66,7 +66,7 @@ def cmd_raw_compile():
         # will extend the dict with 'new' ones
         # should work even better if sltx-source.yaml files are present in the targets
         sg.dependencies = load_dependencies_config(dep, sg.dependencies)
-    # i know just writing withut len is more pythonic but i like it more if it is explicit
+    # i know just writing without len is more pythonic but i like it more if it is explicit
     if len(sg.args.extra_dependencies) > 0:
         texmf_home = su.get_tex_home()
         LOGGER.info("Insalling additional dependencies.")
