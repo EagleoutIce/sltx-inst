@@ -67,7 +67,7 @@ class DockerCtrl:
                 'mount': 'rw'
             }
         run = self.client.containers.run(
-            target, command=command, detach=True, remove=True, working_dir='/root/data', tty=True,
+            target, command=command, detach=True, remove=False, working_dir='/root/data', tty=True,
             network_mode='bridge', user='root' if root else 'lithie-user',
             volumes=volumes)
         # We need a buffer in case a multibyte unicode sequence
@@ -81,6 +81,7 @@ class DockerCtrl:
                 buffer += l
         LOGGER.info("Container completed.")
         feedback = run.wait()
+        run.remove()
         if 'StatusCode' in feedback and feedback['StatusCode'] != 0:
             code = feedback['StatusCode']
             LOGGER.error("Command failed with: " + str(code))
