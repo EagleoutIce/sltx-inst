@@ -38,7 +38,7 @@ class LithieColoredStreamFormatter(logging.Formatter):
         if self.use_color and record.levelname in COLORS:
             record.level_color = COLORS[record.levelname]
         else:
-            record.level_color = ""
+            record.level_color = ''
         record.color_reset = RESET_SEQ
         msg = logging.Formatter.format(self, record)
         return log_color_format(msg)

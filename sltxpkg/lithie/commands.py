@@ -25,10 +25,6 @@ def install(target: str):
 
 
 # TODO: clarify time in docker container as it is utc it must be the same as host!!!!
-# TODO: keep container running to avoid full recompilations each time? (this should be the optimum!!)
-# TODO: optimal would be to mount the working dir to the real world outside working dir to have it detached but saved
-# TODO: in this case cleaning would not be needed!
-
 
 def compile():
     sc.assure_dirs()

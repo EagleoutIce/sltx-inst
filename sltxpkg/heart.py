@@ -18,6 +18,17 @@ def retrieve_by_alias(tc: str):
     return [alias[0] for alias in sub_parser.cmds.items() if tc in alias[1][0][1]][0]
 
 
+def _file_guard():
+    if hasattr(sg.args, 'files') and not sg.args.files:
+        if sg.args.verbose:
+            LOGGER.info("Set default files to: " +
+                        str(sg.configuration[sg.C_DEFAULT_FILES]))
+        sg.args.files = sg.configuration[sg.C_DEFAULT_FILES]
+        if not sg.args.files:
+            LOGGER.error("No files supplied")
+            exit(1)
+
+
 def run(args=None):
     if args is None:
         args = sys.argv[1:]
@@ -34,14 +45,7 @@ def run(args=None):
     autoload_config(DEFAULT_CONFIG, 'default')
     autoload_config(LOCAL_CONFIG, 'local')
 
-    if hasattr(sg.args, 'files') and not sg.args.files:
-        if sg.args.verbose:
-            LOGGER.info("Set default files to: " +
-                        str(sg.configuration[sg.C_DEFAULT_FILES]))
-        sg.args.files = sg.configuration[sg.C_DEFAULT_FILES]
-        if not sg.args.files:
-            LOGGER.error("No files supplied")
-            exit(1)
+    _file_guard()
 
     if sg.args.threads < 0:
         if sg.args.verbose:
