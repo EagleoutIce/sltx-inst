@@ -15,7 +15,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=['PyYAML', 'docker', 'importlib_resources'],
-    scripts=['sltx'],
+    scripts=['sltx', 'sltxc', 'sltxrc'],
     url="https://github.com/EagleoutIce/sltx",
     packages=setuptools.find_packages(exclude=('sltxtest', 'sltxtest.*')),
     package_data={

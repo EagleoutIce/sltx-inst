@@ -1,0 +1,11 @@
+#!/usr/bin/python3
+# sltx raw-compile shortcut
+import sltxpkg.heart as sltx
+import sys
+
+args = ['raw-compile']
+
+if len(sys.argv) > 1:
+    args.extend(sys.argv[1:])
+
+sltx.run(args)
