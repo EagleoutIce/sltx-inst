@@ -4,14 +4,6 @@
 
 # sltx 0.1.x
 
-- [sltx 0.1.x](#sltx-01x)
-  - [Short overview](#short-overview)
-  - [How tos'](#how-tos)
-    - [How to get](#how-to-get)
-    - [How to setup](#how-to-setup)
-    - [How to compile](#how-to-compile)
-    - [How to run](#how-to-run)
-
 ## Short overview
 
 `sltx` is a simple (python 3.5+) script, i've written for *my own purposes* (LaTeX).
@@ -60,6 +52,8 @@ sltx raw-compile <document>
 ```
 
 For further help add `-h` to the commands to get more information about arguments.
+
+*Note*: With version 1.64 there should be the wrapper scripts `sltxc` for `sltx compile` and `sltxrc` for `sltx raw-compile`.
 
 ### How to run
 
