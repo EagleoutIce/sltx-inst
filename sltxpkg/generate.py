@@ -119,7 +119,7 @@ def step_compile(document: dict, target_profile: str):
                  "\" " + " ".join(['"' + f + '"' for f in files]) + "\n"
 
     add_step(document,
-             "Compile the Documents",
+             "Compile the Document" + "s" if len(files) > 1 else "",
              _run=YamlBlock(exec_line)
              )
     return files
