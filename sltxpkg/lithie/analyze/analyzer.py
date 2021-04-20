@@ -5,7 +5,7 @@ import shutil
 import tempfile
 
 ANALYZER_PATTERN = re.compile(
-    '^! |Error:|Undefined control sequence|improper alph|Incomplete \\\\if|Runaway preamble\\?|has an extra|Permission denied|not loadable: Metric|Extra alignment tab has been|Can\'t create output|too long|Runaway argument|al parameter number|Misplaced (alignment)?|doesn\'t match|Invalid UTF-8|forgotten \\\\end|ERROR|Missing|Parameters must be (numbered consecutively)?|Improper alph|Illegal unit of')
+    '^! |Error:|Undefined control sequence|improper alph|Incomplete \\\\if|Runaway preamble\\?|has an extra|Permission denied|not loadable: Metric|Extra alignment tab has been|Can\'t create output|too long|Runaway argument|al parameter number|Misplaced (alignment)?|doesn\'t match|Invalid UTF-8|forgotten \\\\end|ERROR|Missing|Parameters must be (numbered consecutively)?|Improper alph|Illegal unit of|Incompatible glue')
 ARCHIVE_PATTERN = re.compile('.*(\.tar(\.gz)?$|\.zip|\.7z)')
 
 ANALYZE_DIVIDER = "\033[38;5;247m    # -------------------------------------\033[m"
