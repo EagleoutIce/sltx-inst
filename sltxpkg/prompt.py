@@ -13,7 +13,7 @@ def valid_file(inp: str) -> bool:
     return valid_default(inp) and os.path.isfile(inp)
 
 
-def get(prompt: str, valid_input=valid_default, type=str, default=None):
+def get(prompt: str, valid_input=valid_default, expected_type=str, default=None):
     got = None
     prompt = "\033[36m" + prompt.format(**locals()) + ">\033[m "
     if default is None:
@@ -21,7 +21,7 @@ def get(prompt: str, valid_input=valid_default, type=str, default=None):
             got = input(prompt)
     else:
         got = input(prompt)
-    ret = type(default if not valid_input(got) else got)
+    ret = expected_type(default if not valid_input(got) else got)
     return ret
 
 
@@ -33,12 +33,12 @@ def get_bool(pre="", default=None) -> bool:
     else:
         prompt = "[True/FALSE]"
 
-    return get(pre + prompt, type=bool, default=default)
+    return get(pre + prompt, expected_type=bool, default=default)
 
 
 def get_dir(prompt: str, default=None) -> str:
-    return get(prompt, valid_input=valid_dir, type=str, default=default)
+    return get(prompt, valid_input=valid_dir, expected_type=str, default=default)
 
 
 def get_file(prompt: str, default=None) -> str:
-    return get(prompt, valid_input=valid_file, type=str, default=default)
+    return get(prompt, valid_input=valid_file, expected_type=str, default=default)

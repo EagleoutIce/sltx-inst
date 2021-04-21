@@ -132,7 +132,7 @@ def step_commit_and_push(document: dict, files: list):
     if not do_push:
         return
 
-    files = [os.path.splitext(f)[0] + ".pdf" for f in files]
+    files = [os.path.splitext(os.path.basename(f))[0] + ".pdf" for f in files]
 
     print("Which documents do you want to have pushed? You may separate multiple ones by comma.")
     print("Default:", files)
