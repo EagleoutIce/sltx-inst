@@ -1,3 +1,4 @@
+import six
 import sltxpkg.globals
 import sltxpkg.config
 import sltxpkg.dep
