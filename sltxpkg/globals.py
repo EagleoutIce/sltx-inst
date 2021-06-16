@@ -23,6 +23,7 @@ C_DEFAULT_FILES = 'default_files'
 C_DEFAULT_THREADS = 'default_threads'
 C_DEFAULT_RECIPE = 'default_recipe'
 C_WANTED_FILES = 'extra_wanted_files'
+C_BASE_ARGS = 'base_args'
 
 C_USE_DOCKER = "docker_use"
 C_DOCKER_PROFILE = "docker_profile"
@@ -35,6 +36,7 @@ configuration = {
     C_DOWNLOAD_DIR: "~/.sltx/download",
     C_CACHE_DIR: "~/.sltx/cache",
     C_DEFAULT_FILES: [],
+    C_BASE_ARGS: [],
     C_DEFAULT_RECIPE: "default-latexmk.recipe",
     C_DRIVER_LOG: "sltx-drivers.log",
     C_DEFAULT_THREADS: 1,

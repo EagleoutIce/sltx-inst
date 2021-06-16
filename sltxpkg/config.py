@@ -46,7 +46,8 @@ def load_dependencies_config(file: str, target: dict) -> dict:
         for dep in y_dep['dependencies']:
             dep_data = y_dep['dependencies'][dep]
             if 'url' in dep_data:
-                dep_data['url'] = expand_url(dep_data['url'], Path(file).absolute())
+                dep_data['url'] = expand_url(
+                    dep_data['url'], Path(file).absolute())
     return {**target, **y_dep}
 
 
