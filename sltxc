@@ -3,5 +3,5 @@
 import sltxpkg.heart as sltx
 import sys
 
-sys.argv[0] = 'raw-compile'
+sys.argv[0] = 'compile'
 sltx.run(sys.argv)
