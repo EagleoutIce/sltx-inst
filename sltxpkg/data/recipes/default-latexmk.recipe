@@ -2,18 +2,18 @@
 name: Default recipe (latexmk!)
 author: Florian Sihler
 hooks:
-    pre: []
-    in: []
-    post: []
+  pre: []
+  in: []
+  post: []
 
 cleanup_cmds: []
 # No cleanup commands!
 
-args: "-pdf -file-line-error -halt-on-error -interaction=nonstopmode -outdir=\"{out_dir}\""
+args: '-pdf -file-line-error -halt-on-error -interaction=nonstopmode -outdir="{out_dir}"'
 extra_args:
-  - '-shell-escape'
-  - '-recorder'
-  - '{do_quiet}'
+  - "-shell-escape"
+  - "-recorder"
+  - "{do_quiet}"
 
 # Tools will be used to generate files if needed or to require intermediate steps
 # They extend the hooks and can use ifs
@@ -28,7 +28,7 @@ wanted_files:
 
 executable: latexmk
 
-quiet: '--quiet'
+quiet: "--quiet"
 
 run:
-    - "{executable} {args} {extra_args} {file}"
+  - "{executable} {args} {extra_args} {file}"
